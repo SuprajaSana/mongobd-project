@@ -69,7 +69,7 @@ class User {
   }
 
   deleteItemsFromCart(prodId) {
-    const updatedCartItems = this.cart.items.filter((item) => {
+   /* const updatedCartItems = this.cart.items.filter((item) => {
       return item.productId.toString() !== prodId.toString();
     });
     const db = getDB();
@@ -78,7 +78,32 @@ class User {
       .updateOne(
         { _id: this._id },
         { $set: { cart: { items: updatedCartItems } } }
-      );
+      ); */
+    
+     const cartItemIndex = this.cart.items.findIndex((cartProduct) => {
+       return cartProduct.productId.toString() === prodId.toString();
+     });
+
+     let newQuantity;
+     let updatedCartItems = [...this.cart.items];
+
+    if (cartItemIndex >= 0) {
+      if (this.cart.items[cartItemIndex].quantity > 1) {
+        newQuantity = this.cart.items[cartItemIndex].quantity - 1;
+        updatedCartItems[cartItemIndex].quantity = newQuantity;
+      } else {
+        updatedCartItems = this.cart.items.filter((item) => {
+          return item.productId.toString() !== prodId.toString();
+        });
+      }
+     }
+
+     const updatedCart = { items: updatedCartItems };
+     const db = getDB();
+     return db
+       .collection("Users")
+       .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
+    
   }
 
   static findUserById(userId) {
