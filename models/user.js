@@ -1,4 +1,35 @@
-const mongodb = require("mongodb");
+const mongoose = require("mongoose");
+
+const Schema=mongoose.Schema;
+
+const userSchema = new Schema({
+  name: {
+    type: String,
+    required:true
+  },
+  email: {
+    type: String,
+    required:true
+  },
+  cart:{
+    items: [{
+      productId: {
+        type: Schema.Types.ObjectId,
+        ref:'Product',
+        required:true
+      },
+      quantity: {
+        type: Number,
+        required:true
+      }
+    }]
+  }
+})
+
+module.exports=mongoose.model("User",userSchema)
+
+
+/* const mongodb = require("mongodb");
 const getDB = require("../util/database").getDB;
 
 class User {
@@ -78,7 +109,7 @@ class User {
       .updateOne(
         { _id: this._id },
         { $set: { cart: { items: updatedCartItems } } }
-      ); */
+      ); 
 
     const cartItemIndex = this.cart.items.findIndex((cartProduct) => {
       return cartProduct.productId.toString() === prodId.toString();
@@ -146,4 +177,5 @@ class User {
   }
 }
 
-module.exports = User;
+module.exports = User; */
+ 
